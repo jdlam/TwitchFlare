@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html ng-app="TwitchStats">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/css/styles.css" media="screen" title="no title" charset="utf-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular-cookies.js"></script>
+    <script src="/js/scripts.js" charset="utf-8"></script>
+    <title>TwitchStats</title>
+  </head>
+  <body>
+
+    <section ng-controller="UsersController">
+
+      <div class="meta-information">
+        <h3>
+          {{ welcome }}
+        </h3>
+      </div>
+
+      <div ng-hide="token" class="sign-up">
+        <h3>Sign Up:</h3>
+        <form ng-submit="createUser()">
+          <input type="text" ng-model="newUser.username" placeholder="...username">
+          <input type="text" ng-model="newUser.password" placeholder="...password">
+          <input type="submit">
+        </form>
+      </div>
+
+      <div ng-hide="token" class="login">
+        <h3>Login:</h3>
+        <form ng-submit="obtainToken()">
+          <input type="text" ng-model="logInUser.username" placeholder="...username">
+          <input type="text" ng-model="logInUser.password" placeholder="...password">
+          <input type="submit">
+        </form>
+      </div>
+
+      <div ng-show="token">
+        <h3>You're logged {{ username }}</h3>
+        <button type="button" ng-click="logOut()">Log Out</button>
+      </div>
+
+      <div ng-repeat="user in users">
+        <h4>{{ user.username }}</h4>
+      </div>
+
+    </section>
+    <script src="/js/app.js" charset="utf-8"></script>
+  </body>
+</html>
