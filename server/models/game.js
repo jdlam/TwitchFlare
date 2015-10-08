@@ -15,14 +15,29 @@ var GameSchema = new mongoose.Schema({
       url: {type: String},
       logo: {type: String},
       stats: [{
-        stream_viewers: {type: Number},
-        stream_followers: {type: Number},
-        views: {type: Number}
+        stream_viewers: {type: Number}
       }]
     }]
   }]
 });
 
+
+var GameSchema = new mongoose.Schema({
+  name: {type: String, required: true },
+  box: {type: String},
+  logo: {type: String},
+  updated: {type: Number},
+  viewers: {type: Number},
+  channels: {type: Number},
+  children: [
+    {
+      name: {type: String},
+      url: {type: String},
+      logo: {type: String},
+      size: {type: Number}
+    }
+  ]
+});
 
 // Create a TwitchGame mongoose model based on the TwitchGameSchema
 var Game = mongoose.model('Game', GameSchema);

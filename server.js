@@ -44,25 +44,26 @@ app.listen(port, function(){
 
 
 // CRON Job
-var job = schedule.scheduleJob('*/5 * * * * *', function(){
+var job = schedule.scheduleJob('*/30 * * * *', function(){
   fetchTopGames();
-  // getStreams("League of Legends");
 })
 
 function fetchTopGames(){
+  console.log('top games');
   requestify.get('https://api.twitch.tv/kraken/games/top?limit=3').then(function(res){
     var data = res.getBody();
     for (var i=0; i<data.top.length; i++) {
+      var d = new Date;
+      var h = d.getHours();
       newGame = {
         name: data.top[i].game.name,
         box: data.top[i].game.box.large,
         logo: data.top[i].game.logo.large,
-        stats: [{
-          updated: Date.now(),
-          viewers: data.top[i].viewers,
-          channels: data.top[i].channels
-        }]
+        updated: h,
+        viewers: data.top[i].viewers,
+        channels: data.top[i].channels
       };
+      // console.log(newGame);
       findGame(newGame);
     }
   });
@@ -70,17 +71,23 @@ function fetchTopGames(){
 
 // Finds game within the database
 function findGame(newGame){
-  Game.findOne({name: newGame.name}, function(err, game){
+  var d = new Date;
+  var h = d.getHours();
+  Game.findOne({name: newGame.name, updated: newGame.updated}, function(err, game){
     // If game is not found
     if (game === null) {
       // Create game
       var game = new Game(newGame);
-      console.log(newGame.name + " was added to the collection");
+      console.log(newGame.name + " data pulled");
+
     } else {
       // If game is found
       // Update existing game entry
-      console.log(newGame.name + ' already exists...');
-      game.stats.push( newGame.stats[0] )
+      console.log(newGame.name + ' data already exists...');
+
+      // Check if hours of the timestamp overlaps
+      // Pop overlapping entry, and push in new entry
+      
     }
 
     // Push in top 10 streams of this game
@@ -90,30 +97,43 @@ function findGame(newGame){
 
 // Gets the stream data for a specific game
 function getStreams(game, gameName){
-  var gameStreams = [];
   var url = "https://api.twitch.tv/kraken/streams?game=" + gameName + "&limit=3";
   requestify.get(url).then(function(res){
+    console.log('pulling streams for ' + gameName);
     var data = res.getBody();
     var streams = data.streams;
     var streamsArray = [];
 
     // Push each stream object into the streamsArray
-    for (var i=0; i<streams.length; i++) {
-      var stream = {
-        stream_name: streams[i].channel.display_name,
-        url: streams[i].channel.url,
-        logo: streams[i].channel.logo,
-        stats: [{
-          stream_viewers: streams[i].viewers,
-          stream_followers: streams[i].channel.followers,
-          views: streams[i].channel.views
-        }]
-      };
+    for (var i=0; i<=streams.length; i++) {
+      var topStreamViewers = 0;
+      if (i==streams.length) {
+        var viewers = game.viewers - topStreamViewers;
+        var stream = {
+          name: 'Miscellaneous',
+          url: 'www.twitch.tv/directory/game/' + gameName,
+          logo: '',
+          size: viewers
+        }
+      } else {
+        topStreamViewers += streams[i].viewers;
+        var stream = {
+          name: streams[i].channel.display_name,
+          url: streams[i].channel.url,
+          logo: streams[i].channel.logo,
+          size: streams[i].viewers
+        };
+      }
       streamsArray.push(stream);
     }
-    var idx = game.stats.length-1;
-    game.stats[idx].streams = streamsArray;
+    // console.log(streamsArray);
+    // console.log('save???');
+    // console.log(game);
+    game.children = streamsArray;
+    // console.log(game);
     game.save();
+    // console.log('GAME SAVED?!?!');
+    // console.log(game.children);
     console.log('Saved top ' + game.name + ' streams');
   });
 }
