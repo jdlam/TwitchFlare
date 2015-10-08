@@ -1,3 +1,4 @@
+// Dependencies/npm's
 var express = require('express'),
     mongoose = require('mongoose'),
     bodyParser = require('body-parser'),
@@ -5,6 +6,7 @@ var express = require('express'),
     requestify = require('requestify'),
     schedule = require('node-schedule');
 
+var Game = require('./server/models/game.js');
 
 var app = express();
 
@@ -40,24 +42,46 @@ app.listen(port, function(){
 })
 
 
+
 // CRON Job
 var job = schedule.scheduleJob('*/5 * * * * *', function(){
-  console.log('job executed');
-  requestify.get('https://api.twitch.tv/kraken/games/top?limit=10').then(function(res){
-    var data = res.getBody();
-    var topGame = data.top[0];
-    newGame = {
-      name: topGame.game.name,
-      box: topGame.game.box.large,
-      logo: topGame.game.logo.large,
-      stats: [{
-        viewers: topGame.viewers,
-        channels: topGame.channels
-      }]
-    };
-    // console.log(newGame);
-    requestify.post('/api/games', newGame).then(function(res){
-      console.log('Game created');
-    });
-  });
+  fetchTopGames();
 })
+
+function fetchTopGames(){
+  requestify.get('https://api.twitch.tv/kraken/games/top?limit=3').then(function(res){
+    var data = res.getBody();
+    for (var i=0; i<data.top.length; i++) {
+      newGame = {
+        name: data.top[i].game.name,
+        box: data.top[i].game.box.large,
+        logo: data.top[i].game.logo.large,
+        stats: [{
+          viewers: data.top[i].viewers,
+          channels: data.top[i].channels
+        }]
+      };
+      findOrCreateGame(newGame);
+      fetchStreamers(newGame.name);
+    }
+  });
+}
+
+function findOrCreateGame(newGame){
+  Game.findOne({name: newGame.name}, function(err, game){
+    if (game === null) {
+      // create game
+      var twitchGame = new Game(newGame);
+      twitchGame.save();
+      console.log("Game created " + newGame.name);
+      console.log(newGame);
+    } else {
+      // update existing game entry
+      console.log('already exists');
+    }
+  })
+};
+
+function fetchStreamers(gameName){
+
+}

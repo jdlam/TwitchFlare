@@ -12,6 +12,7 @@ gamesRouter.get('/', function (req, res) {
 
 // Create a new user and return as json for POST to '/api/games'
 gamesRouter.post('/', function (req, res) {
+  console.log('************************');
   var game = new Game(req.body);
   console.log(game);
   game.save(function(){
