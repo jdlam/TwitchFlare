@@ -63,7 +63,7 @@ function fetchTopGames(){
         viewers: data.top[i].viewers,
         channels: data.top[i].channels
       };
-      // console.log(newGame);
+
       findGame(newGame);
     }
   });
@@ -87,7 +87,7 @@ function findGame(newGame){
 
       // Check if hours of the timestamp overlaps
       // Pop overlapping entry, and push in new entry
-      
+
     }
 
     // Push in top 10 streams of this game
