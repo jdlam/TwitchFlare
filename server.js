@@ -46,6 +46,7 @@ app.listen(port, function(){
 // CRON Job
 var job = schedule.scheduleJob('*/5 * * * * *', function(){
   fetchTopGames();
+  // getStreams("League of Legends");
 })
 
 function fetchTopGames(){
@@ -57,31 +58,62 @@ function fetchTopGames(){
         box: data.top[i].game.box.large,
         logo: data.top[i].game.logo.large,
         stats: [{
+          updated: Date.now(),
           viewers: data.top[i].viewers,
           channels: data.top[i].channels
         }]
       };
-      findOrCreateGame(newGame);
-      fetchStreamers(newGame.name);
+      findGame(newGame);
     }
   });
 }
 
-function findOrCreateGame(newGame){
+// Finds game within the database
+function findGame(newGame){
   Game.findOne({name: newGame.name}, function(err, game){
+    // If game is not found
     if (game === null) {
-      // create game
-      var twitchGame = new Game(newGame);
-      twitchGame.save();
-      console.log("Game created " + newGame.name);
-      console.log(newGame);
+      // Create game
+      var game = new Game(newGame);
+      console.log(newGame.name + " was added to the collection");
     } else {
-      // update existing game entry
-      console.log('already exists');
+      // If game is found
+      // Update existing game entry
+      console.log(newGame.name + ' already exists...');
+      game.stats.push( newGame.stats[0] )
     }
+
+    // Push in top 10 streams of this game
+    getStreams(game, newGame.name);
   })
 };
 
-function fetchStreamers(gameName){
+// Gets the stream data for a specific game
+function getStreams(game, gameName){
+  var gameStreams = [];
+  var url = "https://api.twitch.tv/kraken/streams?game=" + gameName + "&limit=3";
+  requestify.get(url).then(function(res){
+    var data = res.getBody();
+    var streams = data.streams;
+    var streamsArray = [];
 
+    // Push each stream object into the streamsArray
+    for (var i=0; i<streams.length; i++) {
+      var stream = {
+        stream_name: streams[i].channel.display_name,
+        url: streams[i].channel.url,
+        logo: streams[i].channel.logo,
+        stats: [{
+          stream_viewers: streams[i].viewers,
+          stream_followers: streams[i].channel.followers,
+          views: streams[i].channel.views
+        }]
+      };
+      streamsArray.push(stream);
+    }
+    var idx = game.stats.length-1;
+    game.stats[idx].streams = streamsArray;
+    game.save();
+    console.log('Saved top ' + game.name + ' streams');
+  });
 }
