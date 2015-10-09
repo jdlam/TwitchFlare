@@ -6,26 +6,6 @@ var GameSchema = new mongoose.Schema({
   name: {type: String, required: true },
   box: {type: String},
   logo: {type: String},
-  stats: [{
-    updated: {type: Date, default: Date.now},
-    viewers: {type: Number},
-    channels: {type: Number},
-    streams: [{
-      stream_name: {type: String},
-      url: {type: String},
-      logo: {type: String},
-      stats: [{
-        stream_viewers: {type: Number}
-      }]
-    }]
-  }]
-});
-
-
-var GameSchema = new mongoose.Schema({
-  name: {type: String, required: true },
-  box: {type: String},
-  logo: {type: String},
   updated: {type: Number},
   viewers: {type: Number},
   channels: {type: Number},

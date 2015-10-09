@@ -11,7 +11,7 @@ var Game = require('./server/models/game.js');
 var app = express();
 
 // Connect to Database
-mongoose.connect('mongodb://localhost/twitch-stats')
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/twitch-stats')
 
 // Server Logging
 app.use(morgan('dev'));
@@ -29,22 +29,17 @@ app.get('/', function(){
 });
 
 // Routing/Controllers
-var UsersController = require('./server/controllers/users');
-app.use('/api/users', UsersController);
-
 var GamesController = require('./server/controllers/games')
 app.use('/api/games', GamesController)
 
 // Server
-port = 8080;
+var port = process.env.PORT || '8080';
 app.listen(port, function(){
   console.log('listening on ' + port + '...')
 })
 
-
-
 // CRON Job
-var job = schedule.scheduleJob('*/30 * * * *', function(){
+var job = schedule.scheduleJob('0 * * * *', function(){
   fetchTopGames();
 })
 
@@ -75,20 +70,16 @@ function findGame(newGame){
   var h = d.getHours();
   Game.findOne({name: newGame.name, updated: newGame.updated}, function(err, game){
     // If game is not found
-    if (game === null) {
-      // Create game
-      var game = new Game(newGame);
-      console.log(newGame.name + " data pulled");
-
-    } else {
+    if (game) {
       // If game is found
       // Update existing game entry
       console.log(newGame.name + ' data already exists...');
-
-      // Check if hours of the timestamp overlaps
-      // Pop overlapping entry, and push in new entry
-
+      game.remove();
+      console.log(newGame.name + ' data removed');
     }
+    // Create game
+    var game = new Game(newGame);
+    console.log(newGame.name + " data pulled");
 
     // Push in top 10 streams of this game
     getStreams(game, newGame.name);
@@ -126,14 +117,8 @@ function getStreams(game, gameName){
       }
       streamsArray.push(stream);
     }
-    // console.log(streamsArray);
-    // console.log('save???');
-    // console.log(game);
     game.children = streamsArray;
-    // console.log(game);
     game.save();
-    // console.log('GAME SAVED?!?!');
-    // console.log(game.children);
     console.log('Saved top ' + game.name + ' streams');
   });
 }

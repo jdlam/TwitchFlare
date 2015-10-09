@@ -3,22 +3,32 @@ var express  =  require('express'),
     Game     =  require('../models/game'),
     gamesRouter   =  express.Router();
 
-// Return ALL the users as json to GET to '/api/games'
+// INDEX
 gamesRouter.get('/', function (req, res) {
+  // Return ALL the games from the past 24 hours
   Game.find({}, function (err, results) {
-    res.json(results);
+    // Parse into Sunburst format
+    var flare = {
+      name: "Streams from the past 24 hours",
+      children: [results]
+    };
+    res.send(flare);
   });
 });
 
-// Create a new user and return as json for POST to '/api/games'
-gamesRouter.post('/', function (req, res) {
-  console.log('************************');
-  var game = new Game(req.body);
-  console.log(game);
-  game.save(function(){
-    res.json(game);
+// SHOW
+gamesRouter.get('/:hour', function(req, res){
+  var hours = req.params.hour
+  // Return only games that were recorded at specified time of day
+  Game.find({updated: hours}, function(err, results){
+    // Parse into Sunburst Flare format
+    var flare = {
+      name: "Streams from " + hours + "00",
+      children: [results]
+    };
+    res.send(flare);
   });
-});
+})
 
 // Export the controller
 module.exports = gamesRouter;
