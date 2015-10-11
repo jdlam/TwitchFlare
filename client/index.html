@@ -1,23 +1,52 @@
 <!DOCTYPE html>
-<html ng-app="TwitchStats">
+<html>
   <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="/css/styles.css" media="screen" title="no title" charset="utf-8">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.5/angular.js"></script>
-    <script src="/js/scripts.js" charset="utf-8"></script>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js" charset="utf-8"></script>
     <title>TwitchStats</title>
   </head>
   <body>
+    <h3>TwitchFlare</h3>
 
-    <section ng-controller="GamesController">
+    <div id="chart">
 
-      <div class="meta-information">
-        <h3>
-          {{ welcome }}
-        </h3>
-      </div>
+      <form>
+        <label><input type="radio" name="mode" value="size"> Size</label>
+        <label><input type="radio" name="mode" value="count" checked> Count</label>
+      </form>
+      
+    </div>
+    <!-- <div class="dropdown">
+      <select class="time">
+        <option id="1">1:00 AM</option>
+        <option id="2">2:00 AM</option>
+        <option id="3">3:00 AM</option>
+        <option id="4">4:00 AM</option>
+        <option id="5">5:00 AM</option>
+        <option id="6">6:00 AM</option>
+        <option id="7">7:00 AM</option>
+        <option id="8">8:00 AM</option>
+        <option id="9">9:00 AM</option>
+        <option id="10">10:00 AM</option>
+        <option id="11">11:00 AM</option>
+        <option id="12">12:00 AM</option>
+        <option id="13">1:00 PM</option>
+        <option id="14">2:00 PM</option>
+        <option id="15">3:00 PM</option>
+        <option id="16">5:00 PM</option>
+        <option id="17">6:00 PM</option>
+        <option id="18">7:00 PM</option>
+        <option id="19">8:00 PM</option>
+        <option id="20">9:00 PM</option>
+        <option id="21">10:00 PM</option>
+        <option id="22">11:00 PM</option>
+        <option id="23">12:00 PM</option>
+      </select>
+    </div> -->
 
-    </section>
-    <script src="/js/app.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+    <script src="/js/scripts.js" charset="utf-8"></script>
+
   </body>
 </html>

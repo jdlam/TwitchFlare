@@ -39,7 +39,7 @@ app.listen(port, function(){
 })
 
 // CRON Job
-var job = schedule.scheduleJob('0 * * * *', function(){
+var job = schedule.scheduleJob('7 * * * *', function(){
   fetchTopGames();
 })
 
@@ -49,6 +49,7 @@ function fetchTopGames(){
     var data = res.getBody();
     for (var i=0; i<data.top.length; i++) {
       var d = new Date;
+      console.log(d.getHours() + ':' + d.getMinutes());
       var h = d.getHours();
       newGame = {
         name: data.top[i].game.name,

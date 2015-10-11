@@ -9,7 +9,7 @@ gamesRouter.get('/', function (req, res) {
   Game.find({}, function (err, results) {
     // Parse into Sunburst format
     var flare = {
-      name: "Streams from the past 24 hours",
+      name: "flare",
       children: [results]
     };
     res.send(flare);
@@ -23,9 +23,12 @@ gamesRouter.get('/:hour', function(req, res){
   Game.find({updated: hours}, function(err, results){
     // Parse into Sunburst Flare format
     var flare = {
-      name: "Streams from " + hours + "00",
-      children: [results]
+      name: "flare",
+      children: []
     };
+    for (var i=0; i<results.length; i++) {
+      flare.children.push(results[i]);
+    }
     res.send(flare);
   });
 })

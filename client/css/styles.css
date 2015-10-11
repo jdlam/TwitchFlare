@@ -2,3 +2,19 @@ body {
   background-color: #A9A9A9;
   color: white;
 }
+
+form {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+div#chart {
+  width: auto;
+  height: auto;
+  position: relative;
+}
+
+svg {
+  margin: auto;
+}
