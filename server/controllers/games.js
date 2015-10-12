@@ -10,8 +10,11 @@ gamesRouter.get('/', function (req, res) {
     // Parse into Sunburst format
     var flare = {
       name: "flare",
-      children: [results]
+      children: []
     };
+    for (var i=0; i<results.length; i++) {
+      flare.children.push(results[i]);
+    }
     res.send(flare);
   });
 });

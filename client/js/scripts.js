@@ -1,17 +1,45 @@
 console.log('scripts loaded');
 
+$(document).ready(function(){
+  bindTimeDropdown();
+
+  // Generate the chart with an initial set of data
+  generateSunburst('/api/games/12');
+})
+
+function bindTimeDropdown() {
+  $('select.time').on('input', function(e){
+    var endpoint = $('select.time').val();
+    if (endpoint.length > 0) {
+      endpoint = '/' + endpoint;
+    }
+    var url = '/api/games' + endpoint
+    $.ajax({
+      method: 'get',
+      url: url,
+      success: function(data) {
+        changeData(data);
+      }
+    });
+  });
+};
+
 // Define variables for d3 chart
-var width = 960;
+var width = $(window).width();
 var height = 500;
 var radius = Math.min(width, height) / 2;
+var changes = false;
 
-// x = arc length
-var x = d3.scale.linear().range([0, 2 * Math.PI]);
+// x = arc length of circle
+var x = d3.scale.linear()
+  .range([0, 2 * Math.PI]);
 
-// y = radius
-var y = d3.scale.sqrt().range([0, radius]);
+// y = radius of circle
+var y = d3.scale.linear()
+  .range([0, radius]);
 
 // Colors for d3 chart
+// var color = d3.scale.ordinal().range(['#F5F5F5', '#8A2BE2', '#4682B4', '#9400D3', '#8B0000', '#00FFFF', '#DDA0DD']);
 var color = d3.scale.category20c();
 
 // Create the svg element, and store it as a variable for easy access
@@ -36,24 +64,31 @@ var arc = d3.svg.arc()
 
 // Keep track of the node that is currently being displayed as the root.
 var node;
+var path;
 
-generateSunburst();
+// Attaches tooltips for each node
+var tooltipDiv = d3.select("#chart").append("div")
+  .attr("class", "tooltip sunburst hidden")
+  .style("opacity", 0);
 
-function generateSunburst(){
 
-  d3.json('/api/games/16', function(error, root) {
+// placed in a function, for calling easily with new data.
+function generateSunburst(url){
+
+  d3.json(url, function(error, root) {
     node = root;
-    console.log(node);
 
     // takes the api data, and selects all paths
-    var path = svg.datum(root).selectAll("path")
+    path = svg.datum(root).selectAll("path").classed("arc", true)
         // inserts
         .data(partition.nodes)
         .enter().append("path")
           .attr("d", arc)
+          .style("stroke", "#fff")
           .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
-          .style("fill-rule", "evenodd")
-          .on("click", click)
+          .on("click", click) // Adds click, mouseover, and mouseout events
+          .on("mouseover", showTooltip)
+          .on("mouseout", hideTooltip)
           .each(stash);
 
     // If Size or Count option is changed, then the chart will automatically update
@@ -68,16 +103,18 @@ function generateSunburst(){
           .attrTween("d", arcTweenData);
     });
 
-    function click(d) {
-      node = d;
-      path.transition()
-        .duration(1000)
-        .attrTween("d", arcTweenZoom(d));
-    }
+
   });
 
   d3.select(self.frameElement).style("height", height + "px");
 
+}
+
+function click(d) {
+  node = d;
+  path.transition()
+    .duration(1000)
+    .attrTween("d", arcTweenZoom(d));
 }
 
 // Setup for switching data: stash the old values for transition.
@@ -119,3 +156,65 @@ function arcTweenZoom(d) {
         : function(t) { x.domain(xd(t)); y.domain(yd(t)).range(yr(t)); return arc(d); };
   };
 }
+
+function showTooltip(d) {
+  tooltipDiv.transition()
+      .duration(200)
+      .style("opacity", 0.8);
+
+  tooltipDiv.html( d.depth
+      ? (
+        d.size
+          ? ("<p>" + d.name + "</p><img src=" + d.logo + "></img><p>Viewers: " + d.size + "</p>")
+          : ("<p>" + d.name + "</p><img src=" + d.logo + "></img><p>Viewers: " + d.viewers + "</p>")
+      )
+      : ("Games on Twitch"))
+    .classed("hidden", false)
+    .style("left", (d3.event.pageX-150) + "px")
+    .style("top", (d3.event.pageY-100) + "px");
+}
+
+function hideTooltip(d) {
+  tooltipDiv.transition()
+    .duration(500)
+    .style("opacity", 0)
+    .each("end", function() { tooltipDiv.classed("hidden", true); });
+}
+
+function changeData(data) {
+  if (!changes) {
+    changes = true;
+    timing = 150;
+
+    path.transition()
+      .duration(timing)
+      .attr("opacity", 0)
+      .remove();
+
+    root = data;
+
+    // keeping track of my data in a global variable node
+    node = root;
+
+    setTimeout(function() {
+      path = svg.selectAll("path")
+        .data(partition.nodes(root))
+        .enter().append("path")
+          .attr("opacity", 0.5)
+          .attr("d", arc)
+          .style("stroke", "#fff")
+          .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
+          .on("click", click)
+          .on("mouseover", showTooltip)
+          .on("mouseout", hideTooltip)
+          .each(stash);
+
+      path.transition()
+        .duration(timing)
+        .attr("opacity", function(d) { return d.depth ? 1 : 0; })
+
+      changes = false;
+    }, timing + 100);
+  }
+
+};

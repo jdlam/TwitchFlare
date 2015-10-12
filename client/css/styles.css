@@ -1,6 +1,7 @@
 body {
   background-color: #A9A9A9;
   color: white;
+  box-sizing: border-box;
 }
 
 form {
@@ -17,4 +18,22 @@ div#chart {
 
 svg {
   margin: auto;
+}
+
+.tooltip.sunburst {
+  position: absolute;
+  text-align: center;
+  border: 1px solid blue;
+  width: 100px;
+  background-color: darkgreen;
+  opacity: 0.5;
+  word-wrap: break-word;
+}
+
+.tooltip.hidden {
+  display: none;
+}
+
+.tooltip > img {
+  width: 50px;
 }
