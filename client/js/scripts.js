@@ -4,7 +4,7 @@ $(document).ready(function(){
   bindTimeDropdown();
 
   // Generate the chart with an initial set of data
-  generateSunburst('/api/games/13');
+  generateSunburst('/api/games/17');
 })
 
 function bindTimeDropdown() {
