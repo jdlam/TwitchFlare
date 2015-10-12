@@ -13,6 +13,8 @@ function bindTimeDropdown() {
     if (endpoint.length > 0) {
       endpoint = '/' + endpoint;
     }
+    shuffle(colorArray);
+    var color = d3.scale.ordinal().range(colorArray);
     var url = '/api/games' + endpoint
     $.ajax({
       method: 'get',
@@ -39,8 +41,9 @@ var y = d3.scale.linear()
   .range([0, radius]);
 
 // Colors for d3 chart
-// var color = d3.scale.ordinal().range(['#F5F5F5', '#8A2BE2', '#4682B4', '#9400D3', '#8B0000', '#00FFFF', '#DDA0DD']);
-var color = d3.scale.category20c();
+var colorArray = ['#708090', '#708090', '#66CDAA', '#9932CC', '#7B68EE', '#CD5C5C', '#8B008B', '#C71585']
+var color = d3.scale.ordinal().range(colorArray);
+// var color = d3.scale.category20c();
 
 // Create the svg element, and store it as a variable for easy access
 var svg = d3.select("#chart").append("svg")
@@ -218,3 +221,23 @@ function changeData(data) {
   }
 
 };
+
+
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex ;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
