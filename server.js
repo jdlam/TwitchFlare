@@ -39,7 +39,7 @@ app.listen(port, function(){
 })
 
 // CRON Job
-var job = schedule.scheduleJob('6 */1 * * *', function(){
+var job = schedule.scheduleJob('15 */1 * * *', function(){
   fetchTopGames();
 })
 
