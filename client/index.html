@@ -11,6 +11,9 @@
     <div class="container">
       <h1>TwitchFlare</h1>
       <h5>A Visual Representation of Twitch.tv's Top Games</h5>
+      <p>
+        Data provided by <a href="https://www.twitch.tv/">Twitch.tv</a>
+      </p>
     </div>
 
     <div class="container-fluid">
@@ -55,11 +58,23 @@
 
     <div class="container">
       <div id="fluff">
+        <h2>About</h2>
 
+        <p>
+          This app is meant to help visualize and simplify comparisons between games, allowing one to see trends throughout the past 24 hours. Each section of the graph is either a top game, or a top streamer, on <a href="https://www.twitch.tv">Twitch.tv</a> at that point in time.
+        </p>
+
+        <p>
+          In the past, I've done analyses on the potential of advertising on the Twitch platform, but struggled finding relevant and data. When I did find relevant data, it was very difficult to decipher. <a href="http://socialblade.com/twitch/">Social Blade</a> lists them all in a chart, without giving options on choosing for specific games. <a href="http://stats.twitchapps.com/">TwitchApps</a> has a similar issue, where it's difficult to find data on a specific game.
+        </p>
+
+        <p>
+          The above data is pulled directly from Twitch.tv at different hours of the day. Currently, it is set to pull once an hour, and limited to the top 6 games. From each game, it then pulls in data about the top 10 streams online. All of this data is stored on a personal database, which is then pushed into the Sunburst Chart.
+        </p>
       </div>
     </div>
 
-    <footer>Data provided by <a href="https://www.twitch.tv/">Twitch.tv</a></footer>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
     <script src="/js/scripts.js" charset="utf-8"></script>
