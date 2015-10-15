@@ -69,6 +69,8 @@ var arc = d3.svg.arc()
 var node;
 var path;
 
+console.log('ridiculous stuff');
+
 // Attaches tooltips for each node
 var tooltipDiv = d3.select("#chart").append("div")
   .attr("class", "tooltip sunburst hidden")
