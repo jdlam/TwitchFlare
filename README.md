@@ -46,7 +46,7 @@ You can zoom in by clicking on a section, or zoom out by clicking on the center 
 # Notes
 
 Author: Jonathan Lam
-Last Updated: 10/12/15
+Last Updated: 10/16/15
 
 # Plans for Future Versions
 

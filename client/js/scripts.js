@@ -30,7 +30,7 @@ function bindTimeDropdown() {
 var width = $(window).width();
 var height = 500;
 var radius = Math.min(width, height) / 2;
-var changes = false;
+var newDataSet = false;
 
 // x = arc length of circle
 var x = d3.scale.linear()
@@ -71,9 +71,9 @@ var path;
 
 console.log('ridiculous stuff');
 
-// Attaches tooltips for each node
-var tooltipDiv = d3.select("#chart").append("div")
-  .attr("class", "tooltip sunburst hidden")
+// Attaches info window for each node
+var infoDiv = d3.select("#chart").append("div")
+  .attr("class", "info sunburst hidden")
   .style("opacity", 0);
 
 
@@ -92,8 +92,8 @@ function generateSunburst(url){
           .style("stroke", "#fff")
           .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
           .on("click", click) // Adds click, mouseover, and mouseout events
-          .on("mouseover", showTooltip)
-          .on("mouseout", hideTooltip)
+          .on("mouseover", showInfo)
+          .on("mouseout", hideInfo)
           .each(stash);
 
     // If Size or Count option is changed, then the chart will automatically update
@@ -162,33 +162,33 @@ function arcTweenZoom(d) {
   };
 }
 
-function showTooltip(d) {
-  tooltipDiv.transition()
+function showInfo(d) {
+  infoDiv.transition()
       .duration(200)
       .style("opacity", 0.8);
 
-  tooltipDiv.html( d.depth
+  infoDiv.html( d.depth
       ? (
         d.size
           ? ("<p>" + d.name + "</p><img src=" + d.logo + "></img><p>Viewers: " + d.size + "</p>")
           : ("<p>" + d.name + "</p><img src=" + d.logo + "></img><p>Viewers: " + d.viewers + "</p>")
       )
-      : ("Games on Twitch"))
+      : ("Top 6 Games on Twitch"))
     .classed("hidden", false)
     .style("left", (d3.event.pageX-150) + "px")
     .style("top", (d3.event.pageY-100) + "px");
 }
 
-function hideTooltip(d) {
-  tooltipDiv.transition()
+function hideInfo(d) {
+  infoDiv.transition()
     .duration(500)
     .style("opacity", 0)
-    .each("end", function() { tooltipDiv.classed("hidden", true); });
+    .each("end", function() { infoDiv.classed("hidden", true); });
 }
 
 function changeData(data) {
-  if (!changes) {
-    changes = true;
+  if (!newDataSet) {
+    newDataSet = true;
     timing = 150;
 
     path.transition()
@@ -210,15 +210,15 @@ function changeData(data) {
           .style("stroke", "#fff")
           .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
           .on("click", click)
-          .on("mouseover", showTooltip)
-          .on("mouseout", hideTooltip)
+          .on("mouseover", showInfo)
+          .on("mouseout", hideInfo)
           .each(stash);
 
       path.transition()
         .duration(timing)
         .attr("opacity", function(d) { return d.depth ? 1 : 0; })
 
-      changes = false;
+      newDataSet = false;
     }, timing + 100);
   }
 
