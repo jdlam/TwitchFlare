@@ -11,8 +11,9 @@ div#options {
   text-align: right;
 }
 
-a {
-
+select {
+  color: black;
+  background-color: white;
 }
 
 div#chart {
