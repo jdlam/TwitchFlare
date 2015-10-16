@@ -1,4 +1,5 @@
 body {
+  /*position: relative;*/
   background-color: #A9A9A9;
   color: white;
   box-sizing: border-box;
@@ -6,17 +7,21 @@ body {
 
 /* Chart and Text */
 
+div#options {
+  margin-top: 110px;
+  text-align: right;
+}
+
+@media (max-width: 550px) {
+  div#options {
+    margin-top: 0px;
+  }
+}
+
 ul {
   margin: 0;
   padding: 0;
   list-style-type: none;
-}
-
-div#options {
-  position: absolute;
-  right: 100px;
-  top: 0;
-  text-align: right;
 }
 
 select {

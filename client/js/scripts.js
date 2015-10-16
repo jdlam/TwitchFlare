@@ -29,6 +29,12 @@ function bindTimeDropdown() {
 // Define variables for d3 chart
 var width = $(window).width();
 var height = 500;
+
+if (width < 500) {
+  width = 370;
+  height = 370;
+}
+
 var radius = Math.min(width, height) / 2;
 var newDataSet = false;
 

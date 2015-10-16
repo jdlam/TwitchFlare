@@ -2,6 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/styles.css" media="screen" title="no title" charset="utf-8">
     <script src="https://code.jquery.com/jquery-2.1.4.min.js" charset="utf-8"></script>
@@ -9,17 +12,15 @@
   </head>
   <body>
     <div class="container">
-      <h1>TwitchFlare</h1>
-      <h5>A Visual Representation of Twitch.tv's Top Games</h5>
-      <p>
-        Data provided by <a href="https://www.twitch.tv/">Twitch.tv</a>
-      </p>
-    </div>
+      <div class="pull-left">
 
-    <div class="container-fluid">
-      <div id="chart" class="center-block">
-        <div id="legend">
-        </div>
+          <h1>TwitchFlare</h1>
+          <h5>A Visual Representation of Twitch.tv's Top Games</h5>
+          <p>
+            Data provided by <a href="https://www.twitch.tv/">Twitch.tv</a>
+          </p>
+      </div>
+      <div class="pull-right">
         <div id="options">
           <ul>
             <li>Inner Ring: Games on Twitch.tv</li>
@@ -58,6 +59,13 @@
             </select>
           </div>
         </div>
+      </div>
+
+    </div>
+
+    <div class="container-fluid">
+      <div id="chart" class="center-block">
+
 
       </div>
     </div>
