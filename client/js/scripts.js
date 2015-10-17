@@ -181,8 +181,8 @@ function showInfo(d) {
       )
       : ("Top 6 Games on Twitch"))
     .classed("hidden", false)
-    .style("left", (d3.event.pageX-150) + "px")
-    .style("top", (d3.event.pageY-100) + "px");
+    .style("left", (d3.event.pageX-175) + "px")
+    .style("top", (d3.event.pageY-250) + "px");
 }
 
 function hideInfo(d) {
