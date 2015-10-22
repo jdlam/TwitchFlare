@@ -7,15 +7,16 @@ body {
 
 /* Chart and Text */
 
-div#options {
-  margin-top: 110px;
-  text-align: right;
+.left {
+  float: left;
+  display: inline-block;
+  text-align: left;
 }
 
-@media (max-width: 550px) {
-  div#options {
-    margin-top: 0px;
-  }
+.right {
+  float: right;
+  display: inline-block;
+  text-align: right;
 }
 
 ul {
