@@ -2,7 +2,7 @@
 
 TwitchFlare is a visual representation of the top games on the Twitch.tv platform. The app gathers data every hour, and displays it within a Sunburst Chart, which allows users to see trends between not only the top games throughout the day, but also streamers that are competing with each other.
 
-![TwitchFlare Count Setting](http://i.imgur.com/3HFwCbm.png)
+![TwitchFlare Demo](http://www.gfycat.com/VelvetyAggravatingIrrawaddydolphin)
 
 # Approach
 
